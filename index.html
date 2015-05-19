@@ -1,0 +1,285 @@
+<!DOCTYPE HTML>
+<html>
+<!--
+ This file is part of the NovaeCalc project.
+
+ It is permitted to use, redistribute and/or modify this software
+ under the terms of the MIT License
+
+ @author Felix Maier <maier.felix96@gmail.com>
+ @copyright (c) 2015 Felix Maier, @felixmaier
+
+ -->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="NovaeCalc">
+  <title>NovaeCalc</title>
+  <link rel="stylesheet" type="text/css" href="style/normalize.css"></link>
+  <link rel="stylesheet" type="text/css" href="style/font-awesome.min.css"></link>
+  <link rel="stylesheet" type="text/css" href="style/style.css"></link>
+  <link rel="stylesheet" type="text/css" href="style/gravit.css"></link>
+  <link rel="stylesheet" type="text/css" href="style/dialog.css"></link>
+  <link rel="stylesheet" type="text/css" href="style/dialog-dean.css"></link>
+  <link rel="stylesheet" type="text/css" href="style/eight-bit-color-picker.css"></link>
+</head>
+<body class="g-desktop">
+  <div id="workspace">
+
+    <div id="windows">
+      <div>
+        <div id="container" tabindex="0" class="g-cursor-select">
+
+          <!-- Current hovered cell -->
+          <div id="current_cell" class="row default_layer"></div>
+
+          <!-- Horizontal alphabetical menu -->
+          <div id="letter_menu" class="menu_hor"></div>
+
+          <!-- Vertical numeric menu -->
+          <div id="number_menu" class="menu_ver"></div>
+
+          <div class="body_container">
+            <!-- Cell Grid -->
+            <div id="output" class="viewport" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div id="header">
+      <!-- Top menu -->
+      <nav class="g-menu-bar" style="height: 100%;">
+        <ul class="g-menu g-menu-root">
+          <li id="menu_file" name="File" class="g-menu-item g-menu-item-menu"><span class="g-menu-item-caption">File</span></li>
+          <li id="menu_edit" name="Edit" class="g-menu-item g-menu-item-menu"><span class="g-menu-item-caption">Edit</span></li>
+          <li id="menu_modify" name="Modify" class="g-menu-item g-menu-item-menu"><span class="g-menu-item-caption">Modify</span></li>
+          <li id="menu_view" name="View" class="g-menu-item g-menu-item-menu"><span class="g-menu-item-caption">View</span></li>
+          <li id="menu_debug" name="Debug" class="g-menu-item g-menu-item-menu"><span class="g-menu-item-caption">Debug</span></li>
+        </ul>
+      </nav>
+      <div id="menu_dialogs" style="display:none;position:absolute;">
+        <ul name="File" class="g-menu g-menu-bottom" style="left: 0px; top: 25px;display:none;">
+          <li class="g-menu-item">
+            <span class="g-menu-item-caption">New...</span>
+            <span class="g-menu-item-shortcut">Ctrl+N</span>
+          </li>
+          <li id="open" class="g-menu-item">
+            <input id="import_file" type="file" class="custom-file-input" style="width: 65px;" /></span>
+            <span class="g-menu-item-shortcut">Ctrl+O</span>
+          </li>
+          <li id="save" class="g-menu-item">
+            <span class="g-menu-item-caption">Export</span>
+            <span class="g-menu-item-shortcut">Ctrl+S</span>
+          </li>
+          <li id="saveImage" class="g-menu-item">
+            <span class="g-menu-item-caption">Export as Image</span>
+            <span class="g-menu-item-shortcut">Ctrl+I</span>
+          </li>
+        </ul>
+        <ul name="Edit" class="g-menu g-menu-bottom" style="left: 35px; top: 25px;display:none;">
+          <li id="test" class="g-menu-item">
+            <span class="g-menu-item-caption">Test...</span>
+            <span class="g-menu-item-shortcut">Ctrl+I</span>
+          </li>
+        </ul>
+      </div>
+      <div class="windows">
+        <div class="tab g-active"><span id="debug" class="title">Untitled</span><span class="close fa fa-times"></span></div>
+      </div>
+      <!-- Name -->
+      <div class="view" style="padding-right:0px;">
+        <nav class="g-menu-bar" style="height: 100%;">
+          <ul class="g-menu g-menu-root">
+            <li class="g-menu-item g-menu-item-menu">
+              <span class="g-menu-item-icon" style="display: none;"></span>
+              <span class="g-menu-item-caption">NovaeCalc 0.3 Beta</span>
+              <span class="g-menu-item-tail"></span></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Cell settings menu -->
+    <div id="header" class="menu_bar">
+      <nav class="g-menu-bar" style="height: 100%;">
+        <ul class="g-menu g-menu-root">
+          <li class="g-menu-item g-menu-item-menu">
+            <!-- Font change menu -->
+            <label style="position: absolute; top: 10px; left: 10px;">
+              <select id="change_font" style="width: 110px;height:25px;">
+                <option value="arial, sans, sans-serif">Arial</option>
+                <option value="'courier new', monospace">Courier New</option>
+                <option value="georgia">Georgia</option>
+              </select>
+            </label>
+            <!-- Font size menu -->
+            <label style="position: absolute; top: 10px; left: 130px;">
+              <select id="change_fontSize" style="width: 110px;height:25px;">
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12" selected>12</option>
+                <option value="14">14</option>
+                <option value="18">18</option>
+                <option value="24">24</option>
+                <option value="36">36</option>
+              </select>
+            </label>
+            <!-- Cell bold -->
+            <label style="position: absolute; top: 10px; left: 250px;">
+              <button id="change_bold" style="width: 40px; height: 25px;">
+                <span id="change_bold_preview" class="close fa fa-bold"></span>
+              </button>
+            </label>
+            <!-- Cell italic -->
+            <label style="position: absolute; top: 10px; left: 300px;">
+              <button id="change_italic" style="width: 40px; height: 25px;">
+                <span id="change_italic_preview" class="close fa fa-italic"></span>
+              </button>
+            </label>
+            <!-- Font color menu -->
+            <label style="position: absolute; top: 10px; left: 350px;">
+              <button id="change_fontColor" style="width: 40px; height: 25px;">
+                <span style="position: absolute;">
+                  <span id="font_color_preview" class="fa fa-font" style="color:#c7c7c7;"></span>
+                </span>
+                <span class="fa fa-caret-down" style="margin-left: 19px;"></span>
+              </button>
+              <div hide="true" style="display:block;position: absolute;z-index: 9999;">
+                <div id="font_colorpicker" class="eight-bit-color-picker"></div>
+              </div>
+            </label>
+            <!-- Cell background color -->
+            <label id="change_background" style="position: absolute; top: 10px; left: 400px;height: 25px;">
+              <div class="g-input g-cursor-pipette" style="min-width: 40px;min-height: 23px;background: #fff;"></div>
+              <div style="display:block;position: absolute;z-index: 9999;">
+                <div id="background_colorpicker" class="eight-bit-color-picker"></div>
+              </div>
+            </label>
+            <!-- Cell border menu -->
+            <label hide="true" style="position: absolute; top: 10px; left: 450px;">
+              <button id="change_border" style="width: 40px; height: 25px;">
+                <span class="close fa fa-columns" style="position: absolute;margin-left: 0px;margin-top: 2px;"></span>
+                <span class="fa fa-caret-down" style="margin-left: 19px;"></span>
+              </button>
+            </label>
+            <label style="position: absolute; top: 10px; left: 500px;">
+              <button id="change_livecell" style="width: 40px; height: 25px;">
+                <span id="change_livecell_preview" class="fa fa-wifi"></span>
+              </button>
+            </label>
+            <label style="position: absolute;top: 40px;left: 10px;">
+              <input type="text" id="cell_input" class="formula_input"></input>
+            </label>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Border settings menu -->
+    <div id="border_settings_menu" style="position: absolute;top: 37px;left: 400px;z-index: 99999;display:none;">
+      <div id="panels" class="collapse-none" style="left: 0px; width: 150px;height: 140px;top: 25px;border-bottom: 1px solid black;">
+        <div class="panels-tabs">
+          <div class="panels-frame" style="height: 138px;">
+            <div class="panel-container panel-properties">
+              <div class="properties-panels">
+                <div id="border_settings_menu_items" class="properties-panel-content" style="width: 250px;">
+                  <button id="border_left" style="width: 55px; height: 25px; position: absolute; left: 15px; top: 10px;">
+                    <span>Left</span>
+                  </button>
+                  <button id="border_right" style="width: 55px; height: 25px; position: absolute; left: 75px; top: 10px;">
+                    <span>Right</span>
+                  </button>
+                  <button id="border_top" style="width: 55px; height: 25px; position: absolute; left: 15px; top: 40px;">
+                    <span>Top</span>
+                  </button>
+                  <button id="border_bottom" style="width: 55px; height: 25px; position: absolute; left: 75px; top: 40px;">
+                    <span>Bottom</span>
+                  </button>
+                  <button id="border_all" style="width: 55px; height: 25px; position: absolute; left: 15px; top: 70px;">
+                    <span>All</span>
+                  </button>
+                  <button id="border_outer" style="width: 55px; height: 25px; position: absolute; left: 75px; top: 70px;">
+                    <span>Outer</span>
+                  </button>
+                  <button style="position: absolute;width: 55px; height: 25px;left: 15px;top: 100px;">
+                    <span style="border-bottom: 4px solid #000;position: absolute;margin-left: -16px;margin-top: -12px;font-size: 13px;">Color</span>
+                  </button>
+                  <button style="position: absolute;width: 55px; height: 25px;left: 75px;top: 100px;">
+                    <span style="position: absolute;margin-left: -16px;margin-top: -9px;font-size: 13px;">Style</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right click menu -->
+    <div id="right_click_menu" style="position: absolute;top: 0px;left: 0px;z-index: 99999;display:none;">
+      <div id="menu_dialogs">
+        <ul name="File" class="g-menu g-menu-bottom" style="left: 0px; top: 25px;">
+          <li class="g-menu-item">
+            <span class="g-menu-item-caption">New...</span>
+            <span class="g-menu-item-shortcut">Ctrl+N</span>
+          </li>
+          <li id="open" class="g-menu-item">
+            <input id="import_file" type="file" class="custom-file-input" style="width: 65px;" /></span>
+            <span class="g-menu-item-shortcut">Ctrl+O</span>
+          </li>
+          <li class="g-menu-item">
+            <span class="g-menu-item-caption">Export</span>
+            <span class="g-menu-item-shortcut">Ctrl+S</span>
+          </li>
+          <li id="save" class="g-menu-item">
+            <span class="g-menu-item-caption">Export as Image</span>
+            <span class="g-menu-item-shortcut">Ctrl+I</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="file_image_output" class="dialog dialog--open" style="display:none;">
+      <div class="dialog__content" style="z-index: 99999;">
+        <h2><i class="fa fa-download"></i></h2>
+        <h2>
+          Your project was successfully exported into the image below!</h2>
+          <div>
+            <div class="action" id="file" style="width: 100%;height: 100%;"></div>
+          </div>
+          <br/><br/>
+          <h2><strong>Touch and hold the image for about 2 seconds until a menu appears.</strong></h2>
+          <h2><strong>Click on “Save Image“.</strong></h2>
+          <i id="file_image_output_close" class="fa fa-close" style="position:absolute;z-index: 99999;right: 15px;top: 10px;"></i>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="loader">
+    <div class="loader-wrapper">
+      <img src="icon/novaecalc_new.png" style="width: 145px;" />
+      <h2 class="loader-title" style="padding-top: 55px;padding-left: 5px;"></h2>
+    </div>
+    <div class="loader-background"></div>
+  </div>
+
+  <div id="livecell_current_container" class="vex-content livecell_container" style="display:none;">
+    <div class="vex-dialog-input">
+      <div id="livecell_current" class="g-list" style="width: auto;min-width: 206px;height: 20px;"></div>
+    </div>
+  </div>
+
+  <!-- Load ressources -->
+  <script src="lib/import.min.js" type="text/javascript"></script>
+  <script src="init.js" type="text/javascript"></script>
+
+</body>
+</html>
