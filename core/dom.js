@@ -10,7 +10,11 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
+
+  /** Cache the grid dom here */
+  CORE.DOM.Cache = {};
 
   /** Select and prepare the file output container */
   CORE.DOM.FileOutput = document.querySelector("#file");
@@ -83,5 +87,3 @@
 
   /** Select and prepare the cell input container */
   CORE.DOM.CellInput = document.querySelector("#cell_input");
-
-}).call(this);

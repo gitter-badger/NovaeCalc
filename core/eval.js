@@ -10,7 +10,8 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
 
   /**
    * Run the interpreter
@@ -44,8 +45,13 @@
         result = ENGEL.interpret(formulas[ii].value).VAR[formulas[ii].name].value.value;
         /** Update used cell stack content */
         CORE.Cells.Used[formulas[ii].name].Content = result;
+
+        var name = formulas[ii].name;
+        var letter = CORE.$.alphaToNumber(name.match(CORE.REGEX.numbers).join(""));
+        var number = ~~(name.match(CORE.REGEX.letters).join(""));
+
         /** Display the result, if cell is in view */
-        var jumps = CORE.$.getCell(formulas[ii].name);
+        var jumps = CORE.$.getCell({ letter: letter, number: number });
         if (jumps >= 0) CORE.DOM.Output.children[jumps].innerHTML = result;
       }
     }
@@ -130,5 +136,3 @@
   CORE.registerLiveCell = function() {
     CORE.Cells.Live[arguments[0]] = new CORE.Grid.LiveCell();
   };
-
-}).call(this);

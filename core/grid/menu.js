@@ -10,7 +10,8 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
 
   /**
    * Dynamically generate a menu
@@ -177,6 +178,8 @@
 
         element.addEventListener("mouseup", function(e) {
           this.setAttribute("clicked", 0);
+          /** Re-render grid */
+          CORE.Event.lastAction.scrollY = false;
         });
 
         element.addEventListener("mouseout", function(e) {
@@ -304,6 +307,7 @@
                   Width: 0,
                   Height: 0
                 };
+                self.customCellSizes.array.push(~~(name));
               }
 
               /** User scrolls cell up */
@@ -381,5 +385,3 @@
     }
 
   };
-
-}).call(this);

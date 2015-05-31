@@ -10,7 +10,8 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
 
   /**
    * File
@@ -77,7 +78,7 @@
 
     var a = document.createElement("a");
         document.body.appendChild(a);
-        a.style = "display: none";
+        a.style.display = "none";
 
     var json = JSON.stringify(this.getData()),
         blob = new Blob([json], {type: "application/json"}),
@@ -108,5 +109,3 @@
     });
 
   };
-
-}).call(this);

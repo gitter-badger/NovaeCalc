@@ -10,7 +10,8 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
 
   /**
    * LiveCell Class
@@ -27,14 +28,6 @@
      * @type String
      */
     this.Url = "";
-
-    /**
-     * The uncompiled url to fetch data from
-     *
-     * @property Url
-     * @type String
-     */
-    this.UncompiledUrl = "";
 
     /**
      * Data refresh time
@@ -61,5 +54,3 @@
     this.Data = "";
 
   };
-
-}).call(this);

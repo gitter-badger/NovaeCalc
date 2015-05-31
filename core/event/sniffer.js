@@ -10,7 +10,8 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
 
   /**
    * Check if user is in edit mode
@@ -61,8 +62,6 @@
       if (CORE.Event.inEditMode()) {
         CORE.Grid.cleanEditSelection();
         CORE.Selector.getSelection();
-        /** Run the interpreter */
-        CORE.eval();
       }
       return (true);
     }
@@ -85,8 +84,12 @@
     if (CORE.Event.inEditMode()) {
       /** Go to the end of a cell text if edit first time */
       CORE.Selector.cellFocusSwitch = false;
+
+      var letter = CORE.$.alphaToNumber(CORE.Cells.Edit.match(CORE.REGEX.numbers).join(""));
+      var number = ~~(CORE.Cells.Edit.match(CORE.REGEX.letters).join(""));
+
       /** Get cell content and pass it into the cell edit cell stack */
-      jumps = CORE.$.getCell(CORE.Cells.Edit);
+      jumps = CORE.$.getCell({ letter: letter, number: number });
       if (jumps >= 0) CORE.Cells.Used[CORE.Cells.Edit].Content = CORE.DOM.CellInput.value;
     }
 
@@ -96,20 +99,13 @@
 
       /** Fetch the current selected cell */
       CORE.Grid.cleanEditSelection();
-      CORE.Grid.getEditSelection(CORE.Selector.Selected.First.Letter + CORE.Selector.Selected.First.Number);
+      CORE.Grid.getEditSelection({ letter: CORE.Selector.Selected.First.Letter, number: CORE.Selector.Selected.First.Number });
 
       /** Async input processing */
       this.processCellContent();
 
     /** User pressed enter */
-    } else {
-      CORE.eval();
-      CORE.Grid.getEditSelection(CORE.Selector.Selected.First.Letter + CORE.Selector.Selected.First.Number);
-      CORE.Grid.cleanEditSelection();
-      /** Take selection and move it 1 down */
-      CORE.Selector.moveSelectionDown(1);
-      CORE.DOM.CellInput.blur();
-    }
+    } else CORE.Event.navigateTo("down", 1);
 
   };
 
@@ -125,7 +121,7 @@
     if (CORE.Event.inEditMode()) {
       var cellEditContent = CORE.Cells.Used[CORE.Cells.Edit].Content;
       /** Check if cell is filled and valid */
-      if (cellEditContent && cellEditContent.length) {
+      if (cellEditContent !== undefined && cellEditContent !== null && cellEditContent.length) {
         /** Cell starts with a "=" and will be interpreted as a formula */
         if (cellEditContent[0] === "=") {
           CORE.Cells.Used[CORE.Cells.Edit].Formula = cellEditContent;
@@ -161,7 +157,7 @@
     CORE.DOM.CellInput.focus();
 
     setTimeout(function() {
-      jumps = CORE.$.getCell(CORE.Selector.Selected.First.Letter + CORE.Selector.Selected.First.Number);
+      jumps = CORE.$.getCell({ letter: CORE.Selector.Selected.First.Letter, number: CORE.Selector.Selected.First.Number });
       if (jumps >= 0) element = CORE.DOM.Output.children[jumps];
       /** Update cell used stack value with cell input fields value */
       if (CORE.Cells.Used[CORE.Cells.Edit]) CORE.Cells.Used[CORE.Cells.Edit].Content = CORE.DOM.CellInput.value;
@@ -180,4 +176,25 @@
 
   };
 
-}).call(this);
+  /**
+   * User edited a cell and wants to navigate to another
+   *
+   * @method navigateTo
+   * @static
+   */
+  CORE.Event.navigateTo = function(direction, amount) {
+
+    /** Run the interpreter */
+    CORE.eval();
+
+    CORE.Grid.getEditSelection({ letter: CORE.Selector.Selected.First.Letter, number: CORE.Selector.Selected.First.Number });
+
+    CORE.Grid.cleanEditSelection();
+
+    /** Take selection and move it */
+    CORE.Selector.moveSelection(direction, amount);
+
+    /** Leave the input */
+    CORE.DOM.CellInput.blur();
+
+  };

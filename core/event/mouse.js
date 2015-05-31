@@ -10,7 +10,8 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
 
   /**
    * Listen for mouse double clicks
@@ -46,7 +47,14 @@
   CORE.Event.mouseDown = function (e) {
 
     /** Only accept left click, prevent multiple mousedown event */
-    if (e.button == 2 || e.which === 3 || CORE.Input.Mouse.Pressed) return void 0;
+    if (e.button === 1 || /** Middle click */
+        e.button === 2 || /** Right click */
+        e.which  === 3 || /** Right click */
+        e.which  === 2 || /** Middle click */
+        CORE.Input.Mouse.Pressed) {
+          e.preventDefault();
+          return void 0;
+        }
 
     /** Update empty timestamp */
     if (!this.lastMouseDown) this.lastMouseDown = e.timeStamp;
@@ -74,7 +82,7 @@
     if (e.target.id === "cell_input") {
 
       /** User selected a cell */
-      if (CORE.Cells.Select) {
+      if (CORE.Cells.Select.Letter && CORE.Cells.Select.Number) {
         CORE.eval();
         CORE.Grid.cleanEditSelection();
         CORE.Grid.getEditSelection(CORE.Cells.Select);
@@ -93,13 +101,22 @@
       /** Hide live cell container */
       CORE.DOM.LiveCellContainer.style.display = "none";
 
-      this.lastMouseDownCell = e.target.getAttribute("name");
+      var name = e.target.getAttribute("name");
+      var letter = CORE.$.alphaToNumber(name.match(CORE.REGEX.numbers).join(""));
+      var number = ~~(name.match(CORE.REGEX.letters).join(""));
 
-      CORE.Cells.Select = this.lastMouseDownCell;
+      var cellName = (CORE.$.numberToAlpha(letter)) + number;
 
-      /** Make sure the first property gets updated a maximum of 1 time per click */
-      if (!CORE.Cells.Selected.First) {
-        CORE.Cells.Selected.First = e.target.getAttribute("name");
+      CORE.Event.lastMouseDownCell.Letter = letter;
+      CORE.Event.lastMouseDownCell.Number = number;
+
+      CORE.Cells.Select = CORE.Event.lastMouseDownCell;
+
+        CORE.Cells.Selected.First = {
+          Letter: letter,
+          Number: number
+        };
+
         CORE.Cells.Selected.Last = CORE.Cells.Selected.First;
 
         /** Update parent cell, so keypress only moving will work */
@@ -107,13 +124,13 @@
         CORE.Grid.Settings.keyScrolledX = CORE.Grid.Settings.keyScrolledY = 0;
 
         /** Two selected cell coordinates */
-        if (CORE.Cells.Selected.First && CORE.Cells.Selected.Last) {
+        if (CORE.Cells.Selected.First.Letter &&
+            CORE.Cells.Selected.First.Number &&
+            CORE.Cells.Selected.Last.Letter &&
+            CORE.Cells.Selected.Last.Number) {
           /** Only execute selection if user doesnt edit a cell at the moment */
           CORE.Selector.getSelection();
         }
-
-        /** Clean edited cells only if the current selected cell isn't edited */
-        if (!CORE.Cells.Used[CORE.Cells.Selected.First]) CORE.Grid.cleanEditSelection();
 
         /** User edits a cell and clicked on another cell which was also edited */
         if ( CORE.Input.Mouse.Edit &&
@@ -124,7 +141,8 @@
           CORE.Grid.cleanEditSelection();
         }
 
-      }
+        /** Clean edited cells only if the current selected cell isn't edited */
+        if (!CORE.Cells.Used[cellName]) CORE.Grid.cleanEditSelection();
 
     /** User selected another cell, delete edited cell */
     } else if (CORE.Input.Mouse.Edit) {
@@ -150,7 +168,10 @@
     CORE.Input.Mouse.Pressed = false;
 
     /** Clean Selected Cells */
-    CORE.Cells.Selected.First = CORE.Cells.Selected.First = null;
+    CORE.Cells.Selected.First = {
+      Letter: CORE.Cells.Select.Letter,
+      Number: CORE.Cells.Select.Number
+    };
 
     /** User resized something */
     if (CORE.Input.Mouse.CellResize) {
@@ -178,18 +199,37 @@
     if (CORE.Input.Mouse.Pressed) {
       /** Valid cell ? */
       if (e.target.parentNode.id === CORE.DOM.Output.id) {
+
+        var name = e.target.getAttribute("name");
+        var letter = CORE.$.alphaToNumber(name.match(CORE.REGEX.numbers).join(""));
+        var number = ~~(name.match(CORE.REGEX.letters).join(""));
+        var cellName = (CORE.$.numberToAlpha(letter)) + number;
+
         /** Make sure the first property gets updated a maximum of 1 time per wipe */
-        if (!CORE.Cells.Selected.First) CORE.Cells.Selected.First = e.target.getAttribute("name");
+        if (!CORE.Cells.Selected.First.Letter && !CORE.Cells.Selected.First.Number) {
+
+          CORE.Cells.Selected.First = {
+            Letter: letter,
+            Number: number
+          }
+
+        }
 
         /** Calm Down, dont overwrite stack value with same value again */
-        if (CORE.Cells.Selected.Last === e.target.getAttribute("name")) return;
+        if ( (CORE.$.numberToAlpha(CORE.Cells.Selected.Last.Letter) + CORE.Cells.Selected.Last.Number) === cellName) return void 0;
 
-        CORE.Cells.Selected.Last = e.target.getAttribute("name");
+        CORE.Cells.Selected.Last = {
+          Letter: letter,
+          Number: number
+        }
 
         /** Two selected cell coordinates */
-        if (CORE.Cells.Selected.First && CORE.Cells.Selected.Last) {
+        if (CORE.Cells.Selected.First.Letter &&
+            CORE.Cells.Selected.First.Number &&
+            CORE.Cells.Selected.Last.Letter &&
+            CORE.Cells.Selected.Last.Number) {
           /** Cell was never edited */
-          if (!CORE.Cells.Used[CORE.Cells.Selected.First]) CORE.Selector.getSelection();
+          if (!CORE.Cells.Used[cellName]) CORE.Selector.getSelection();
           /** Cell is in edited state */
           else {
             CORE.Grid.cleanEditSelection();
@@ -198,7 +238,7 @@
         }
 
         /** Clean edited cells only if the current selected cell isn't edited */
-        if (!CORE.Cells.Used[CORE.Cells.Selected.First]) CORE.Grid.cleanEditSelection();
+        if (!CORE.Cells.Used[cellName]) CORE.Grid.cleanEditSelection();
 
       }
 
@@ -227,8 +267,13 @@
        /** Calculate difference between this and last timestamp */
       var difference = e.timeStamp - this.lastMouseScroll;
 
-      /** Prevent too fast mouse scrolling */
-      if (difference && difference <= 30) return void 0;
+      /** Scroll increment, if user scrolls fast */
+      if (difference < 40) {
+        CORE.Settings.Scroll.Vertical += 2;
+      /** Otherwise, reset scroll amount */
+      } else {
+        CORE.Settings.Scroll.Vertical = CORE.Settings.Scroll.OriginalVertical;
+      }
 
     }
 
@@ -254,6 +299,9 @@
       }
 
       direction = direction ? "down" : "up";
+
+      /** User scrolled up or down, dont redraw */
+      CORE.Event.lastAction.scrollY = true;
 
       if (direction === "down") {
         CORE.Grid.Settings.scrolledY += CORE.Settings.Scroll.Vertical;
@@ -284,5 +332,3 @@
     }
 
   };
-
-}).call(this);

@@ -10,7 +10,8 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
 
   /**
    * Listen for key presses
@@ -68,6 +69,7 @@
         CORE.Selector.selectCellByKeyPress();
         /** Update last key press timestamp */
         this.lastKeyPress = e.timeStamp - 100;
+        CORE.Event.lastAction.scrollY = false;
         return void 0;
       /** [RIGHT] */
       case 39:
@@ -78,6 +80,7 @@
         CORE.Selector.selectCellByKeyPress();
         /** Update last key press timestamp */
         this.lastKeyPress = e.timeStamp - 100;
+        CORE.Event.lastAction.scrollY = false;
         return void 0;
     }
 
@@ -98,6 +101,14 @@
     if (e.keyCode === 17) {
       e.preventDefault();
       CORE.Input.Keyboard.Strg = true;
+      return void 0;
+    }
+
+    /** User pressed the [Tab] key */
+    if (e.keyCode === 9) {
+      e.preventDefault();
+      CORE.Input.Keyboard.Tab = true;
+      CORE.Event.navigateTo("right", 1);
       return void 0;
     }
 
@@ -126,6 +137,10 @@
       CORE.Input.Keyboard.Strg = false;
     }
 
-  };
+    /** User left the [TAB] key */
+    if (e.keyCode === 9) {
+      e.preventDefault();
+      CORE.Input.Keyboard.Tab = false;
+    }
 
-}).call(this);
+  };

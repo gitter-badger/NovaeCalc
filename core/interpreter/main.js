@@ -1,4 +1,17 @@
-(function() { "use strict"
+/**
+ * This file is part of the NovaeCalc project.
+ *
+ * It is permitted to use, redistribute and/or modify this software
+ * under the terms of the MIT License
+ *
+ * @author Felix Maier <maier.felix96@gmail.com>
+ * @copyright (c) 2015 Felix Maier, @felixmaier
+ *
+ * You may not change or remove these lines
+ *
+ */
+
+"use strict";
 
   var root = this;
 
@@ -26,63 +39,26 @@
   };
 
   /**
-   * Interpret a string
+   * String interpretation procedure
    *
    * @method interpret
+   * @return {object} STACK
    * @static
    */
   ENGEL.prototype.interpret = function(stream) {
 
-    ENGEL.STACK.TIMER.start = performance.now();
-
+    /** Lexical analysis */
     this.lexed = this.Lexer.lex(stream);
-
+//for (var ii = 0; ii < this.lexed.length; ++ii) console.log(this.lexed[ii]);
+    /** Generate AST */
     this.ast = this.Parser.parse(this.lexed);
-
+console.log(this.ast);
+    /** Evaluate the AST */
     this.Evaluator.evaluate(this.ast);
 
-    ENGEL.STACK.TIMER.end = performance.now();
-
-    ENGEL.STACK.TIMER.duration = ENGEL.STACK.TIMER.end - ENGEL.STACK.TIMER.start;
-
-    return ENGEL.STACK;
-
-  };
-
-  /**
-   * Detect type of input data, return converted data and type declaration
-   *
-   * @method TypeMaster
-   * @return {Object}
-   * @static
-   */
-  ENGEL.prototype.TypeMaster = function(data) {
-
-    var object = {
-      value: null,
-      type: null,
-      raw: data
-    };
-
-    object.value = data;
-
-    /** Numeric */
-    if (!isNaN(data)) {
-      object.value = parseFloat(data);
-    }
-
-    /** String */
-    else if (typeof data == "string" || (typeof data == "object" && data.constructor === String)) {
-      object.value = String(data.replace(/"/g, ""));
-    }
-
-    object.type = typeof(object.value);
-
-    return object;
+    return (ENGEL.STACK);
 
   };
 
   /** Assign it global */
   root.ENGEL = ENGEL;
-
-}).call(this);

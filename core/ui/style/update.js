@@ -10,10 +10,13 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
 
   /** Update the cell style menu */
-  CORE_UI.updateCellStyleMenu = function(cell) {
+  CORE_UI.updateCellStyleMenu = function(cellName) {
+
+    var cell = CORE.$.numberToAlpha(cellName.letter) + cellName.number;
 
     /** Check if cell was registered */
     if (CORE.Cells.Used[cell]) {
@@ -22,7 +25,7 @@
       if (CORE.Cells.Used[cell].Formula) {
         CORE.DOM.CellInput.value = CORE.Cells.Used[cell].Formula;
       /** Check if cell has a custom content */
-      } else if (CORE.Cells.Used[cell].Content) {
+      } else if (CORE.Cells.Used[cell].Content !== undefined && CORE.Cells.Used[cell].Content !== null) {
         /** Update cell input content */
         CORE.DOM.CellInput.value = CORE.Cells.Used[cell].Content;
       /** Reset cell input content */
@@ -127,5 +130,3 @@
     }
 
   };
-
-}).call(this);

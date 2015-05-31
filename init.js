@@ -10,12 +10,16 @@
  * You may not change or remove these lines
  *
  */
+
+"use strict";
+
 Import.scripts = [
   /** Libraries */
   "lib/fastclick.min.js",
-  "lib/js2png.js",
   "lib/ajax.min.js",
   "lib/eight-bit-color-picker.min.js",
+  /** Polyfills */
+  "core/polyfill.js",
   /** Menu */
   "core/ui/main.js",
   "core/ui/menu.js",
@@ -39,6 +43,7 @@ Import.scripts = [
   "core/event/sniffer.js",
   /** Grid */
   "core/grid/main.js",
+  "core/grid/cache.js",
   "core/grid/menu.js",
   "core/grid/update.js",
   "core/grid/resize.js",
@@ -59,9 +64,14 @@ Import.scripts = [
   "core/interpreter/main.js",
   "core/interpreter/stack.js",
   "core/interpreter/lexer.js",
-  "core/interpreter/parser.js",
-  "core/interpreter/evaluator.js"
+  "core/interpreter/parser/main.js",
+  "core/interpreter/parser/expression.js",
+  "core/interpreter/evaluator/main.js",
+  "core/interpreter/evaluator/expression.js",
+  "core/interpreter/evaluator/function.js",
+  "core/interpreter/type.js"
 ];
+
 Import.after = function() {
   ENGEL.init();
   CORE_UI.init();
@@ -71,9 +81,11 @@ Import.after = function() {
   setTimeout( function() { CORE.$.init(); }, 250);
   setTimeout( function() { document.querySelector("#loader").style.display = "none"; }, 750);
 };
+
 Import.each = function(percent) {
   /** Update percentage in document */
   document.querySelector(".loader-title").innerHTML = percent + "%";
   if (percent >= 99) document.querySelector(".loader-wrapper").classList.add("fadeOut");
 };
+
 Import.me();

@@ -10,7 +10,8 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
 
   /**
    * Mark cell column in the menu based on selected cells
@@ -42,16 +43,14 @@
     this.MenuSelection.Horizontal = x;
     this.MenuSelection.Vertical = y;
 
-    if (CORE.DOM.HorizontalMenu.children[x] && CORE.DOM.VerticalMenu.children[y]) {
-
+    if (CORE.DOM.HorizontalMenu.children[x]) {
       CORE.DOM.HorizontalMenu.children[x].classList.add("cell_bright");
       CORE.DOM.HorizontalMenu.children[x].classList.remove("cell_dark");
+    }
 
+    if (CORE.DOM.VerticalMenu.children[y]) {
       CORE.DOM.VerticalMenu.children[y].classList.add("cell_bright");
       CORE.DOM.VerticalMenu.children[y].classList.remove("cell_dark");
-
     }
 
   };
-
-}).call(this);

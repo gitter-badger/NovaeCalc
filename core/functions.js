@@ -10,7 +10,8 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
 
   /** Create Functions Object */
   CORE.$ = {};
@@ -23,14 +24,11 @@
    */
   CORE.$.init = function() {
 
-    /** Generate the alphabet */
-    CORE.$.generateAlphabet();
-
     /** Mobile device check */
     CORE.$.isMobile();
 
     /** Calculate scroll amount */
-    CORE.Settings.Scroll.Vertical = CORE.$.calculateScrollAmount();
+    CORE.Settings.Scroll.OriginalVertical = CORE.Settings.Scroll.Vertical = CORE.$.calculateScrollAmount();
 
     /** Fastclick if we're on mobile */
     if (CORE.Settings.Mobile) FastClick.attach(document.body);
@@ -57,10 +55,13 @@
     CORE.Event.resize();
 
     /** Define first cell in grid as parent cell */
-    CORE.Selector.parentSelectedCell = "A1";
+    CORE.Selector.parentSelectedCell = {
+      Letter: 1,
+      Number: 1
+    };
 
     /** Select major first cell in the grid */
-    CORE.Selector.selectCell("A1");
+    CORE.Selector.selectCell(1, 1);
 
   };
 
@@ -85,80 +86,76 @@
   };
 
   /**
-   * Generate the alphabet
-   *
-   * @method generateAlphabet
-   * @static
-   */
-  CORE.$.generateAlphabet = function() {
-    for (var a = 65, z = 91; a < z; ++a) CORE.Alphabet.push(String.fromCharCode(a));
-  };
-
-  /**
-   * Single letter to multiple letter conversion
-   *
-   * @method singleToMultipleLetter
-   * @static
-   */
-  CORE.$.singleToMultipleLetter = function(letter, times) {
-
-    var output = "";
-
-    if (times === 1) output = letter + letter;
-    else if (times > 1) for (var ii = 0; ii < times; ++ii) output += letter;
-    else output = letter;
-
-    return (output);
-
-  };
-
-  /**
    * Number to alphabetical letter conversion
    *
    * @method numberToAlpha
    * @static
    */
-  CORE.$.numberToAlpha = function(integer) {
+  CORE.$.numberToAlpha = function(number) {
 
-    /** Alphabetical start position fix */
-    integer -= 1;
+    /** Charcode for a */
+    var a = 65;
 
-    /** Everything same or below zero is invalid and will be converted to A */
-    if (integer <= 0) return (CORE.Alphabet[0]); 
+    /** Alphabet length */
+    var length = 26;
 
-    /** Default position in alphabet */
-    if (CORE.Alphabet[integer]) return (CORE.Alphabet[integer]);
+    /** Final letter */
+    var letter = 0;
 
-    /**
-     * Higher alphabet position than 26
-     * Catch modulo to get the alphabetical letter
-     * Get length of number to calculate letter repeatment times
-     */
-    if (integer % 26 <= 26 && integer % 26 >= 0) {
-      return (this.singleToMultipleLetter(CORE.Alphabet[integer % 26], Math.floor(integer / 26) + 1));
-    }
+    /** Calculation */
+    var newNumber = 0;
+
+    /** Get modulo */
+    letter = (a + (number - 1) % length);
+
+    /** Auto validation */
+    letter = letter <= a ? String.fromCharCode(a) : String.fromCharCode(letter);
+
+    /** Get letter length */
+    newNumber = parseInt((number - 1) / length);
+
+    /** Recurse to get the following letters */
+    if (newNumber > 0) return (CORE.$.numberToAlpha(newNumber) + letter);
+
+    return (letter);
 
   };
 
   /**
    * Alphabetical letter to number conversion
    *
+   * TODO: Support > 702 =^ ZZ
+   *
    * @method alphaToNumber
    * @static
    */
   CORE.$.alphaToNumber = function(letter) {
 
-    for (var ii = 0; ii < CORE.Alphabet.length; ++ii) {
-      if (CORE.Alphabet[ii] === letter[0]) {
-        /** Alphabetical start position fix */
-        ii += 1;
-        /** Detect multiple letters */
-        if (letter.length > 1) {
-          ii = ( (letter.length - 1) * CORE.Alphabet.length) + ii;
-        }
-        return (ii);
-      }
-    }
+    if (!isNaN(letter)) return void 0;
+
+    /** Charcode for a */
+    var a = 65;
+
+    /** Alphabet length */
+    var length = 26;
+
+    /** Calculation */
+    var newNumber = 0;
+
+    /** Convert letter into number */
+    var number = letter.charCodeAt(0);
+
+    /** Auto validation */
+    number = number <= a ? 1 : (number % a + 1);
+
+    /** Get number value */
+    newNumber = parseInt((number - 1) * length);
+
+    newNumber += (length);
+
+    if (letter = letter.substr(1, letter.length)) return (CORE.$.alphaToNumber(letter) + newNumber);
+
+    return (number);
 
   };
 
@@ -168,14 +165,15 @@
    * @method getCell
    * @static
    */
-  CORE.$.getCell = function(name) {
+  CORE.$.getCell = function(object) {
 
-    var letter = name.match(CORE.REGEX.numbers).join(""),
-        number = parseInt(name.match(CORE.REGEX.letters).join("")),
-        jumps = ((CORE.Grid.Settings.y * (CORE.$.alphaToNumber(letter) - 1) ) + number - 1 - CORE.Grid.Settings.scrolledY) - (CORE.Grid.Settings.y * CORE.Grid.Settings.scrolledX);
+    var letter = object.letter,
+        number = object.number,
+        jumps = ((CORE.Grid.Settings.y * (letter - 1) ) + number - 1 - CORE.Grid.Settings.scrolledY) - (CORE.Grid.Settings.y * CORE.Grid.Settings.scrolledX);
 
-    if (CORE.DOM.Output.children[jumps] && CORE.$.isInView(letter, jumps)) return (jumps);
-    else return void 0;
+    if (CORE.$.isInView(letter, jumps) && CORE.DOM.Output.children[jumps]) return (jumps);
+
+    return void 0;
 
   };
 
@@ -187,33 +185,12 @@
    */
   CORE.$.isInView = function(letter, jumps) {
 
-    var row = CORE.$.alphaToNumber(letter);
+    var row = letter;
         row = row <= 1 ? 1 : row;
 
-    if (jumps < ( (CORE.$.alphaToNumber(letter) * CORE.Grid.Settings.y) - CORE.Grid.Settings.y ) - (CORE.Grid.Settings.y * CORE.Grid.Settings.scrolledX) ) return (false);
-    else if (jumps >= (CORE.$.alphaToNumber(letter) * CORE.Grid.Settings.y) - (CORE.Grid.Settings.y * CORE.Grid.Settings.scrolledX) ) return (false);
+    if (jumps < ( (letter * CORE.Grid.Settings.y) - CORE.Grid.Settings.y) - (CORE.Grid.Settings.y * CORE.Grid.Settings.scrolledX) ) return (false);
+    else if (jumps >= (letter * CORE.Grid.Settings.y) - (CORE.Grid.Settings.y * CORE.Grid.Settings.scrolledX) ) return (false);
     return (true);
-
-  };
-
-  /**
-   * Update a specific cells content
-   *
-   * @method updateCell
-   * @static
-   */
-  CORE.$.updateCell = function(name, content) {
-
-    var letter = name.match(CORE.REGEX.numbers).join(""),
-        number = parseInt(name.match(CORE.REGEX.letters).join("")),
-        jumps = ((CORE.Grid.Settings.y * (CORE.$.alphaToNumber(letter) - 1) ) + number - 1 - CORE.Grid.Settings.scrolledY) - (CORE.Grid.Settings.y * CORE.Grid.Settings.scrolledX);
-
-    /** Found the cell, replace its content */
-    if (CORE.DOM.Output.children[jumps]) {
-      CORE.DOM.Output.children[jumps].innerHTML = content;
-    }
-
-    return void 0;
 
   };
 
@@ -259,9 +236,8 @@
 
     /** Loop through all selected cells */
     for (var ii = 0; ii < CORE.Selector.SelectedCells.length; ++ii) {
-      if (!CORE.Cells.Used[CORE.Selector.SelectedCells[ii]]) {
-        CORE.Cells.Used[CORE.Selector.SelectedCells[ii]] = new CORE.Grid.Cell();
-      }
+      var name = CORE.$.numberToAlpha(CORE.Selector.SelectedCells[ii].letter) + CORE.Selector.SelectedCells[ii].number;
+      if (!CORE.Cells.Used[name]) CORE.Cells.Used[name] = new CORE.Grid.Cell();
     }
 
   };
@@ -326,4 +302,18 @@
 
   };
 
-}).call(this);
+  /**
+   * Is number a safe integer
+   *
+   * @method isSafeInteger
+   * @static
+   */
+  CORE.$.isSafeInteger = function(number) {
+
+    if (number >= 9E15) {
+      if (number >= window.Number.MAX_SAFE_INTEGER) return (window.Number.MAX_SAFE_INTEGER - 1);
+    }
+
+    return (number);
+
+  };

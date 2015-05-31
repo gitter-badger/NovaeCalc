@@ -1,4 +1,17 @@
-(function() { "use strict"
+/**
+ * This file is part of the NovaeCalc project.
+ *
+ * It is permitted to use, redistribute and/or modify this software
+ * under the terms of the MIT License
+ *
+ * @author Felix Maier <maier.felix96@gmail.com>
+ * @copyright (c) 2015 Felix Maier, @felixmaier
+ *
+ * You may not change or remove these lines
+ *
+ */
+
+"use strict";
 
   /**
    * Represents a virtual variable stack
@@ -13,18 +26,7 @@
      * @property VAR
      * @type Object
      */
-    VAR: {},
-    /**
-     * Object which stores counts the execution time of the current code
-     *
-     * @property TIMER
-     * @type Object
-     */
-    TIMER: {
-      duration: null,
-      start:    null,
-      end:      null
-    }
+    VAR: {}
   };
 
   ENGEL.STACK.prototype = ENGEL.STACK;
@@ -40,57 +42,46 @@
   };
 
   /**
-   * Get the execution time of the current code
-   *
-   * @method executionTime
-   * @static
-   */
-  ENGEL.STACK.prototype.executionTime = function() {
-    if (this.TIMER.start && this.TIMER.end) { return this.TIMER; }
-    else return void 0;
-  };
-
-  /**
    * Get specific variable from the stack
    *
    * @method get
-   * @return {Object}
+   * @return {object}
    * @static
    */
   ENGEL.STACK.prototype.get = function(value) {
     if (this.VAR[value]) { return this.VAR[value]; }
-    else return void 0;
+    return void 0;
   };
 
   /**
    * Get specific variable value from the stack
    *
    * @method getValue
-   * @return {Object}
+   * @return {object}
    * @static
    */
   ENGEL.STACK.prototype.getValue = function(value) {
     if (this.VAR[value]) { return this.VAR[value].value.value; }
-    else return void 0;
+    return void 0;
   };
 
   /**
    * Update specific variable in the stack
    *
    * @method update
-   * @return {Object}
+   * @return {object}
    * @static
    */
   ENGEL.STACK.prototype.update = function(value, data) {
     if (this.VAR[value]) { return this.VAR[value].value = data; }
-    else return void 0;
+    return void 0;
   };
 
   /**
    * Create a clean virgin variable in the stack
    *
    * @method createVariable
-   * @return {Object}
+   * @return {object}
    * @static
    */
   ENGEL.STACK.prototype.createVariable = function(value) {
@@ -106,7 +97,5 @@
       };
       return this.VAR[value];
     }
-    else return void 0;
+    return void 0;
   };
-
-}).call(this);

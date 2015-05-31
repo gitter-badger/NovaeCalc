@@ -10,7 +10,8 @@
  * You may not change or remove these lines
  *
  */
-(function() { "use strict"
+
+"use strict";
 
   /**
    * The Grid
@@ -57,8 +58,13 @@
       /** Alphabetical menu */
       alphabetical: {},
       /** Numeric menu */
-      numeric: {}
+      numeric: {},
+      /** Fast access array */
+      array: []
     };
+
+    /** Save each grid cell */
+    this.cellArray = []
 
     /** Different action on desktop and mobile */
     this.mouseMode = !CORE.Settings.Mobile ? "mouseover" : "click";
@@ -216,6 +222,8 @@
 
     CORE.DOM.Output.innerHTML = output;
 
+    this.cacheDOM();
+
     this.addCellListeners();
 
     CORE.Selector.getSelection();
@@ -224,5 +232,3 @@
     if (CORE.Input.Mouse.Edit) this.getEditSelection(CORE.Cells.Edit);
 
   };
-
-}).call(this);
