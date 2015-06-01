@@ -24,17 +24,12 @@
     var first = this.Selected.First;
     var last = this.Selected.Last;
 
-    var height = this.Selected.Last.Number - this.Selected.First.Number + 1;
-    var width = this.Selected.Last.Letter - this.Selected.First.Letter + 1;
-
     var object = {
       top: [],
       bottom: [],
       left: [],
       right: []
     };
-
-    var cacheTarget = "";
 
     /** Minimum field size: 2x2 */
     for (var ii = 0; ii < this.SelectedCells.length; ++ii) {
@@ -56,30 +51,52 @@
       }
     }
 
+    return (object);
+
+  };
+
+  /**
+   * Draw a border of a object
+   *
+   * @method drawOuterBorder
+   * @static
+   */
+  CORE.Selector.prototype.drawOuterBorder = function() {
+
+    var object = this.getOuterSelection();
+
+    var cacheTarget = "";
+
+    var letter = "";
+
     /** Top */
     for (var ii = 0; ii < object.top.length; ++ii) {
-      cacheTarget = CORE.Cells.Used[CORE.$.numberToAlpha(object.top[ii].letter) + object.top[ii].number];
+      letter = CORE.$.numberToAlpha(object.top[ii].letter);
+      cacheTarget = CORE.Cells.Used[letter][letter + object.top[ii].number];
       cacheTarget.Border.used = true;
       cacheTarget.Border.top = true;
     }
 
     /** Bottom */
     for (var ii = 0; ii < object.bottom.length; ++ii) {
-      cacheTarget = CORE.Cells.Used[CORE.$.numberToAlpha(object.bottom[ii].letter) + object.bottom[ii].number];
+      letter = CORE.$.numberToAlpha(object.bottom[ii].letter);
+      cacheTarget = CORE.Cells.Used[letter][letter + object.bottom[ii].number];
       cacheTarget.Border.used = true;
       cacheTarget.Border.bottom = true;
     }
 
     /** Left */
     for (var ii = 0; ii < object.left.length; ++ii) {
-      cacheTarget = CORE.Cells.Used[CORE.$.numberToAlpha(object.left[ii].letter) + object.left[ii].number];
+      letter = CORE.$.numberToAlpha(object.left[ii].letter);
+      cacheTarget = CORE.Cells.Used[letter][letter + object.left[ii].number];
       cacheTarget.Border.used = true;
       cacheTarget.Border.left = true;
     }
 
     /** Right */
     for (var ii = 0; ii < object.right.length; ++ii) {
-      cacheTarget = CORE.Cells.Used[CORE.$.numberToAlpha(object.right[ii].letter) + object.right[ii].number];
+      letter = CORE.$.numberToAlpha(object.right[ii].letter);
+      cacheTarget = CORE.Cells.Used[letter][letter + object.right[ii].number];
       cacheTarget.Border.used = true;
       cacheTarget.Border.right = true;
     }
