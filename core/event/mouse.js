@@ -342,6 +342,7 @@
           CORE.DOM.VerticalMenu.classList.remove("moveDown");
           CORE.DOM.Output.classList.remove("moveUp");
           CORE.DOM.VerticalMenu.classList.remove("moveUp");
+          CORE.DOM.Output.style.top = "0px";
           CORE.DOM.VerticalMenu.style.top = "100px";
 
         }
@@ -350,6 +351,19 @@
           CORE.Grid.Settings.lastScrollY = CORE.Settings.Scroll.Vertical;
           CORE.Grid.updateHeight("up", CORE.Settings.Scroll.Vertical);
 
+          /** Animate */
+          if (difference > calcDifference * 2) {
+            CORE.DOM.Output.classList.remove("moveDown");
+            CORE.DOM.VerticalMenu.classList.remove("moveDown");
+            CORE.DOM.Output.classList.remove("moveUp");
+            CORE.DOM.VerticalMenu.classList.remove("moveUp");
+            setTimeout( function() {
+              CORE.DOM.Output.classList.add("moveDown");
+              CORE.DOM.VerticalMenu.classList.add("moveDown");
+              CORE.DOM.Output.style.top = "-25px";
+              CORE.DOM.VerticalMenu.style.top = "75px";
+            }, 1);
+          }
 
         }
 
