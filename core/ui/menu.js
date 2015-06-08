@@ -34,6 +34,14 @@
   /** Initialize everything */
   CORE_UI.init = function() {
 
+    document.querySelector("#menu_connect").addEventListener('click', function(e) {
+      CORE.Connector.loginModal();
+    });
+
+    CORE.DOM.AddSheet.addEventListener('click', function() {
+			CORE.Sheets.addSheet();
+    });
+
     document.querySelector("#import_file").addEventListener('change', function(e) {
 
       var input = e.target;

@@ -18,6 +18,7 @@ Import.scripts = [
   "lib/fastclick.min.js",
   "lib/ajax.min.js",
   "lib/eight-bit-color-picker.min.js",
+  "lib/socket.io.min.js",
   "style/mui/js/mui.min.js",
   /** Polyfills */
   "core/polyfill.js",
@@ -42,6 +43,8 @@ Import.scripts = [
   "core/event/mouse.js",
   "core/event/key.js",
   "core/event/sniffer.js",
+  /** Sheet */
+  "core/sheet/main.js",
   /** Grid */
   "core/grid/main.js",
   "core/grid/cache.js",
@@ -67,6 +70,9 @@ Import.scripts = [
   "core/edit.js",
   "core/file.js",
   "core/awakener.js",
+  /** Connector */
+  "core/connector/main.js",
+  "core/connector/action.js",
   /** Interpreter */
   "core/interpreter/main.js",
   "core/interpreter/stack.js",

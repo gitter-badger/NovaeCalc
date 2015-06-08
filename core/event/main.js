@@ -87,15 +87,15 @@
 
     CORE.Settings.Height = window.innerHeight;
 
-    CORE.Settings.Scroll.Vertical = CORE.$.calculateScrollAmount();
+    CORE.Settings.Scroll.OriginalVertical = CORE.Settings.Scroll.Vertical = CORE.$.calculateScrollAmount();
 
     CORE.Event.lastAction.scrollY = false;
 
-    CORE.Grid.calculateGrid();
+    CORE.Sheets[CORE.CurrentSheet].calculateGrid();
 
-    CORE.Grid.generateCells();
+    CORE.Sheets[CORE.CurrentSheet].generateCells();
 
-    CORE.Grid.updateWidth("right");
+    CORE.Sheets[CORE.CurrentSheet].updateWidth("right");
 
     CORE.Awakener.reset();
 
