@@ -303,26 +303,34 @@
 
     var direction = 0;
 
+    var amount = 0;
+
     /** Make sure the grid was scrolled */
     if (e.target.parentNode.id === CORE.DOM.Output.id) {
       /** IE */
       if (e.wheelDelta) {
         if (e.wheelDelta * ( -120 ) > 0) direction = 1;
+        amount = Math.floor(~(e.wheelDelta) + 1 / 10);
       /** Chrome, Firefox */
       } else {
         /** Chrome */
         if (e.deltaY > 0) {
           direction = 1;
+          amount = Math.floor(~(e.deltaY) + 1 / 10);
         /** Firefox */
         } else if (e.detail * ( -120 ) > 0) {
           direction = 0;
+          amount = Math.floor(~(e.detail) + 1 * 10);
         /** Firefox */
         } else if (e.detail * ( -120 ) < 0) {
           direction = 1;
+          amount = Math.floor(~(e.detail) + 1 * 10);
         } else direction = 0;
       }
 
       direction = direction ? "down" : "up";
+
+      console.log(amount);
 
       /** User scrolled up or down, dont redraw */
       CORE.Sheets[CORE.CurrentSheet].Input.lastAction.scrollY = true;
@@ -333,14 +341,7 @@
 
         /** Animate */
         if (difference > calcDifference * 2) {
-          CORE.DOM.Output.classList.remove("moveDown");
-          CORE.DOM.VerticalMenu.classList.remove("moveDown");
-          CORE.DOM.Output.classList.remove("moveUp");
-          CORE.DOM.VerticalMenu.classList.remove("moveUp");
-          setTimeout( function() {
-            CORE.DOM.Output.classList.add("moveUp");
-            CORE.DOM.VerticalMenu.classList.add("moveUp");
-          }, 55);
+          CORE.Event.animateMouseDown();
         }
 
         CORE.Sheets[CORE.CurrentSheet].updateHeight("down", CORE.Settings.Scroll.Vertical);
@@ -351,13 +352,7 @@
           CORE.Sheets[CORE.CurrentSheet].Settings.lastScrollY = 0;
           CORE.Sheets[CORE.CurrentSheet].updateHeight("default", CORE.Settings.Scroll.Vertical);
 
-          /** Animate */
-          CORE.DOM.Output.classList.remove("moveDown");
-          CORE.DOM.VerticalMenu.classList.remove("moveDown");
-          CORE.DOM.Output.classList.remove("moveUp");
-          CORE.DOM.VerticalMenu.classList.remove("moveUp");
-          CORE.DOM.Output.style.top = "0px";
-          CORE.DOM.VerticalMenu.style.top = "100px";
+          CORE.Event.animateMouseUpMaximum();
 
         }
         else if (CORE.Sheets[CORE.CurrentSheet].Settings.scrolledY - CORE.Settings.Scroll.Vertical >= 0) {
@@ -367,16 +362,7 @@
 
           /** Animate */
           if (difference > calcDifference * 2) {
-            CORE.DOM.Output.classList.remove("moveDown");
-            CORE.DOM.VerticalMenu.classList.remove("moveDown");
-            CORE.DOM.Output.classList.remove("moveUp");
-            CORE.DOM.VerticalMenu.classList.remove("moveUp");
-            setTimeout( function() {
-              CORE.DOM.Output.classList.add("moveDown");
-              CORE.DOM.VerticalMenu.classList.add("moveDown");
-              CORE.DOM.Output.style.top = "-25px";
-              CORE.DOM.VerticalMenu.style.top = "75px";
-            }, 1);
+            CORE.Event.animateMouseUp();
           }
 
         }
@@ -385,6 +371,12 @@
 
       /** Make sure user scrolled */
       if (direction) {
+
+        /** Share scrolling */
+        if (CORE.Connector.connected) {
+          CORE.Connector.action("scrolling", {direction: direction, amount: CORE.Settings.Scroll.Vertical});
+        }
+
         /** Update menu, get new selection */
         CORE.Sheets[CORE.CurrentSheet].updateMenu();
         CORE.Sheets[CORE.CurrentSheet].Selector.getSelection();

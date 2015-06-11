@@ -24,6 +24,9 @@
     /** Save socket */
     this.socket = null;
 
+    /** Default url */
+    this.url = "http://134.255.219.177";
+
     /** Default port */
     this.port = 3000;
 
@@ -61,11 +64,12 @@
 
     if (!window.io) throw new Error("NovaeCalc requires socket.io!");
 
-    this.socket = io.connect(window.location.host + ":" + 3000);
+    this.socket = io.connect(this.url + ":" + this.port);
 
     /** Only execute once */
     this.initListeners();
 
+    /** Ask for a new or existing room */
     this.createRoom();
 
   };
@@ -117,7 +121,7 @@
         case "roomdata":
           if (this.room) {
             if (data.data) {
-              this.processServerCells(data.data.cells);
+              this.processServerCells(data.data.sheets);
             }
           }
           break;
@@ -127,6 +131,14 @@
             /** Single cell change */
             case "cellchange":
               this.processServerCell(data.data);
+              break;
+            /** Scroll change */
+            case "scrolling":
+              this.processServerScrolling(data.data);
+              break;
+            /** Sheet update, someone created a new sheet */
+            case "newsheet":
+              this.processNewSheet(data.data);
               break;
           }
           break;
@@ -166,7 +178,7 @@
       /** Delete question mark to validate the string */
       name = name.slice(1, name.length);
       /** Make use of acknowledge */
-      this.socket.emit("createroom", name, function(state) {
+      this.socket.emit("createroom", {name: name, sheet: CORE.CurrentSheet}, function(state) {
         /** Room was successfully created */
         if (state) {
           prompt("Please save the following master access key for this room!", state);
@@ -174,8 +186,10 @@
         } else {
           securityPassword = prompt("Please enter the room password: ");
           /** Send the password to the server */
-          self.socket.emit("securitypassword", securityPassword, self.room, function(bool) {
-            console.log(bool);
+          self.socket.emit("securitypassword", {password: securityPassword, room: self.room, sheet: CORE.CurrentSheet}, function(roomData) {
+            /** Got latest room data */
+            self.processServerCells(roomData);
+            self.processNewSheet(CORE.CurrentSheet);
           });
         }
       });
