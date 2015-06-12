@@ -189,7 +189,7 @@
           self.socket.emit("securitypassword", {password: securityPassword, room: self.room, sheet: CORE.CurrentSheet}, function(roomData) {
             /** Got latest room data */
             self.processServerCells(roomData);
-            self.processNewSheet(CORE.CurrentSheet);
+            self.processNewSheet({sheet: CORE.CurrentSheet});
           });
         }
       });
