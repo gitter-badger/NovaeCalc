@@ -20,70 +20,7 @@ Import.scripts = [
   "lib/eight-bit-color-picker.min.js",
   "lib/socket.io.min.js",
   "style/mui/js/mui.min.js",
-  /** Polyfills */
-  "core/polyfill.js",
-  /** Menu */
-  "core/ui/main.js",
-  "core/ui/menu.js",
-  "core/ui/action.js",
-  "core/ui/settings.js",
-  /** Menu cell styling */
-  "core/ui/style/border.js",
-  "core/ui/style/font.js",
-  "core/ui/style/background.js",
-  "core/ui/style/live.js",
-  "core/ui/style/inject.js",
-  "core/ui/style/update.js",
-  /** Run the core */
-  "core/main.js",
-  "core/dom.js",
-  "core/eval.js",
-  /** Input */
-  "core/event/main.js",
-  "core/event/animate.js",
-  "core/event/mouse.js",
-  "core/event/key.js",
-  "core/event/sniffer.js",
-  /** Sheet */
-  "core/sheet/main.js",
-  /** Grid */
-  "core/grid/main.js",
-  "core/grid/cache.js",
-  "core/grid/menu.js",
-  "core/grid/update.js",
-  "core/grid/resize.js",
-  "core/grid/cell.js",
-  "core/grid/livecell.js",
-  /** Injector */
-  "core/injector/main.js",
-  "core/injector/insert.js",
-  "core/injector/delete.js",
-  /** Selector */
-  "core/selector/main.js",
-  "core/selector/hover.js",
-  "core/selector/key.js",
-  "core/selector/menu.js",
-  "core/selector/select.js",
-  "core/selector/functions.js",
-  "core/selector/master.js",
-  /** Helpers */
-  "core/functions.js",
-  "core/edit.js",
-  "core/file.js",
-  "core/awakener.js",
-  /** Connector */
-  "core/connector/main.js",
-  "core/connector/action.js",
-  /** Interpreter */
-  "core/interpreter/main.js",
-  "core/interpreter/stack.js",
-  "core/interpreter/lexer.js",
-  "core/interpreter/parser/main.js",
-  "core/interpreter/parser/expression.js",
-  "core/interpreter/evaluator/main.js",
-  "core/interpreter/evaluator/expression.js",
-  "core/interpreter/evaluator/function.js",
-  "core/interpreter/type.js"
+  "compiled.js"
 ];
 
 Import.after = function() {
