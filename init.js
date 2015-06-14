@@ -31,10 +31,7 @@ Import.after = function() {
     CORE.Speedy.runTest(function () {
       /** Add fade out animation, hide element */
       document.querySelector("#loader").classList.add("fadeOut");
-      setTimeout( function() {
-        document.querySelector("#loader").style.display = "none";
-        document.querySelector(".loader-background").style.display = "none";
-      }, 750);
+      setTimeout( function() { document.querySelector("#loader").style.display = "none"; }, 750);
     });
   }, 250);
 };
