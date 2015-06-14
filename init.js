@@ -39,7 +39,7 @@ Import.after = function() {
 Import.each = function(percent) {
   /** Update percentage in document */
   document.querySelector(".loader-title").innerHTML = percent + "%";
-  //if (percent >= 99) document.querySelector(".loader-wrapper").classList.add("fadeOut");
+  if (percent >= 99) document.querySelector(".loader-wrapper").classList.add("fadeOut");
 };
 
 Import.me();
