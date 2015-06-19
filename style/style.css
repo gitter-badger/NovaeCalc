@@ -164,7 +164,7 @@ button, input, select, textArea {
 
 .default_layer {
   background: #448AFF !important;
-  cursor: default !important;
+  cursor: pointer !important;
   color: #fff !important;
 }
 
@@ -279,6 +279,7 @@ button, input, select, textArea {
 }
 
 .cell_edit {
+  text-align: left;
   border: solid 2px #448AFF !important;
   background: #fff;
   -webkit-box-shadow: 0 3px 5px rgba(0,0,0,0.4);
@@ -866,6 +867,25 @@ button, input, select, textArea {
   width: 20px;
   background-color: rgba(21, 101, 192, 0.55);
   color: #fff !important;
+}
+
+.usersInRoom {
+  position: absolute;
+  z-index: 9;
+  top: 0px;
+  left: -2px !important;
+  margin-top: -7px;
+  padding-top: 0px;
+  border-radius: 0px;
+  border: none;
+  width: 22px;
+  background-color: rgba(0,0,0,0);
+  font-size: 10px;
+  color: #fff !important;
+}
+
+.usersInRoomButton:focus {
+  outline: 0;
 }
 
 .extendButton {
